@@ -1,5 +1,29 @@
 import React, {Component} from 'react';
 
+const styles = {
+    label: {
+        position: 'relative',
+        display: 'flex'
+    },
+    input: {
+        padding: '5px 10px',
+        marginBottom: '15px',
+    },
+    inputError: {
+        padding: '5px 10px',
+        marginBottom: '15px',
+        borderColor: 'red'
+    },
+    error: {
+        fontSize: '14px',
+        color: 'red',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        margin: 0
+    }
+};
+
 class Input extends Component {
     static defaultProps = {
         label: '',
@@ -12,21 +36,19 @@ class Input extends Component {
     };
 
     render() {
-        const {label, type, placeholder, value, onBlur, error} = this.props;
+        const {label, error} = this.props;
 
         return (
-            <label>
-                <p>{label}</p>
+            <label style={styles.label}>
+                {label && <p>{label}</p>}
 
                 <input
-                    type={type}
-                    placeholder={placeholder}
-                    value={value}
+                    {...this.props}
+                    style={error ? styles.inputError : styles.input}
                     onChange={this.changeHandler}
-                    onBlur={onBlur}
                 />
 
-                <p>{error}</p>
+                {error && <p style={styles.error}>{error}</p>}
             </label>
         );
     }

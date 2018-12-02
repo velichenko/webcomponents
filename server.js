@@ -1,22 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const client = require('./routes/api/client');
-const todos = require('./routes/api/todos');
+const {api} = require('./routes');
 
 const app = express();
 
 app.use(express.json());
 
-const db = require('./config/application-dev').mongodb;
+const {mongodb} = require('./config/application-dev');
 
 mongoose
-    .connect(db.url, {useNewUrlParser: true, auth: {user: db.user, password: db.password}})
+    .connect(mongodb.url, {useNewUrlParser: true, auth: {user: mongodb.user, password: mongodb.password}})
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error(err));
 
-app.use('/api/client', client);
-app.use('/api/todos', todos);
+for (const route of api) {
+    app.use(`/api/${route.url}`, route.router);
+}
+
+app.use((req, res) => res.status(404).send(`Not Found`));
 
 const port = process.env.PORT || 5000;
 

@@ -1,11 +1,19 @@
 import React, {Fragment} from 'react';
 import {Link} from 'react-router-dom';
 
-const  Main =()=> (
-    <Fragment>
-        <Link to="/todos">Todos</Link>
+const styles = {
+    link: {
+        marginLeft: '20px'
+    }
+};
 
-        <Link to="/leave-request">LeaveRequest</Link>
+const Main = () => (
+    <Fragment>
+        <Link to="/registration" style={styles.link}>Registration</Link>
+
+        <Link to="/todos" style={styles.link}>Todos</Link>
+
+        <Link to="/leave-request" style={styles.link}>LeaveRequest</Link>
     </Fragment>
 );
 
