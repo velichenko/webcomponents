@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Input from "../components/Input";
 
 class Todos extends Component {
     state = {
@@ -18,15 +19,11 @@ class Todos extends Component {
         return (
             <div>
                 <form onSubmit={this.submitHandler}>
-                    <label>
-                        <input
-                            type="text"
-                            placeholder="ToDo"
-                            name="title"
-                            value={title}
-                            onChange={e => this.changeHandler(e.target.name, e.target.value)}
-                        />
-                    </label>
+                    <Input
+                        placeholder="ToDo"
+                        value={title}
+                        onChange={this.changeHandler('title')}
+                    />
 
                     <button>Добавить</button>
                 </form>
@@ -36,7 +33,7 @@ class Todos extends Component {
         );
     }
 
-    changeHandler = (field, value) => this.setState(state => ({...state, [field]: value}));
+    changeHandler = field => value => this.setState(state => ({...state, [field]: value}));
 
     submitHandler = e => {
         e.preventDefault();

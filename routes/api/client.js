@@ -4,15 +4,17 @@ const nodemailer = require('nodemailer');
 const {service, user, pass} = require('../../config/application-dev').mail;
 
 router.post('/request', (req, res) => {
+    const {firstName, lastName, email} = req.body;
+
     const transporter = nodemailer.createTransport({
         service, auth: {user, pass}
     });
 
     const mailOptions = {
         from: user,
-        to: req.body.email,
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
+        to: email,
+        subject: 'Письмо при помощи Node.js',
+        text: `Добрый день ${firstName} ${lastName}! Ваша заявка получена.`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {

@@ -1,13 +1,19 @@
 import React, {Fragment} from 'react';
-import LeaveRequest from "./LeaveRequest";
-import Todos from "./Todos";
+import {Link, Route} from 'react-router-dom';
+import Main from '../pages/Main';
+import Todos from '../pages/Todos';
+import LeaveRequest from '../pages/LeaveRequest';
 
 const App = () => (
-  <Fragment>
-      <LeaveRequest/>
+    <Fragment>
+        <Link to="/">Main</Link>
+            
+        <Route path="/" exact component={Main}/>
 
-      <Todos/>
-  </Fragment>
+        <Route path="/todos" exact component={Todos}/>
+
+        <Route path="/leave-request" exact component={LeaveRequest}/>
+    </Fragment>
 );
 
 export default App;
