@@ -56,9 +56,7 @@ class Todos extends Component {
         this.setState(state => ({...state, errors}));
     };
 
-    changeHandler = field => value => {
-        this.setState(state => ({...state, [field]: value}), () => this.validator());
-    };
+    changeHandler = field => value => this.setState(state => ({...state, [field]: value}), () => this.validator());
 
     removeHandler = id => () => {
         fetch(`/api/todos/${id}`, {

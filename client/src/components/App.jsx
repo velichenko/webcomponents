@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import {Link, Route} from 'react-router-dom';
 import Main from '../pages/Main';
-import Registration from "../pages/Registration";
+import Registration from "../pages/Registration/Registration";
 import Todos from '../pages/Todos/Todos';
 import LeaveRequest from '../pages/LeaveRequest';
 
