@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 
-const todos = [
-    {id: 0, title: 'Write API on NodeJS'},
-    {id: 1, title: 'Write client side with form'},
-    {id: 2, title: 'Do email markup'},
-    {id: 3, title: 'Write API om Python'}
-];
+const Todo = require('../../models/Todo');
 
-router.get('/', (req, res) => res.json(todos));
+router.get('/', (req, res) => Todo.find().then(todos => res.json(todos)));
+
+router.post('/', (req, res) => {
+    const newTodo = new Todo({title: req.body.title});
+
+    newTodo.save().then(todo => res.json(todo));
+});
 
 module.exports = router;

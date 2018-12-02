@@ -1,18 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
+const {service, user, pass} = require('../../config/application-dev').mail;
 
 router.post('/request', (req, res) => {
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'youremail@gmail.com',
-            pass: 'yourpass'
-        }
+        service, auth: {user, pass}
     });
 
     const mailOptions = {
-        from: 'youremail@gmail.com',
+        from: user,
         to: req.body.email,
         subject: 'Sending Email using Node.js',
         text: 'That was easy!'
