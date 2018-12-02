@@ -4,10 +4,17 @@ const nodemailer = require('nodemailer');
 
 const router = express.Router();
 const {service, user, pass} = require('../../config/application-dev').mail;
+const validator = require('../../validation').client;
 
 const Client = require('../../models/Client');
 
 router.post('/register', (req, res) => {
+    const {errors, isValid} = validator(req.body);
+
+    if(!isValid) {
+        return res.status(400).json(errors)
+    }
+
     Client.findOne({email: req.body.email}).then(user => {
         if (user) {
             return res.status(403).json({message: 'User already exist'});
