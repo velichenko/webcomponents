@@ -18,7 +18,7 @@ class Registration extends Component {
                     placeholder="Имя"
                     value={name}
                     onChange={this.changeHandler('name')}
-                    onBlur={this.validator}
+                    onBlur={this.validator('name')}
                     error={errors.name}
                 />
 
@@ -26,7 +26,7 @@ class Registration extends Component {
                     placeholder="Email"
                     value={email}
                     onChange={this.changeHandler('email')}
-                    onBlur={this.validator}
+                    onBlur={this.validator('email')}
                     error={errors.email}
                 />
 
@@ -35,7 +35,7 @@ class Registration extends Component {
                     placeholder="Пароль"
                     value={password}
                     onChange={this.changeHandler('password')}
-                    onBlur={this.validator}
+                    onBlur={this.validator('password')}
                     error={errors.password}
                 />
 
@@ -44,17 +44,17 @@ class Registration extends Component {
         );
     }
 
-    validator = () => {
+    validator = field => () => {
         const {errors} = validator({
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
         });
 
-        this.setState(state => ({...state, errors}));
+        this.setState(state => ({...state, errors: {...state.errors, [field]: errors[field]}}));
     };
 
-    changeHandler = field => value => this.setState(state => ({...state, [field]: value}), () => this.validator());
+    changeHandler = field => value => this.setState(state => ({...state, [field]: value}), () => this.validator(field)());
 
     submitHandler = e => {
         e.preventDefault();
