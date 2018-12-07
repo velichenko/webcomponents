@@ -20,6 +20,22 @@ router.post('/', (req, res) => {
     newTodo.save().then(todo => res.json(todo));
 });
 
+router.get('/:id', (req, res) => Todo
+    .findById(req.params.id)
+    .then(todo => res.json(todo))
+    .catch(() => res.status(500).json({message: 'failure'}))
+);
+
+router.put('/:id', (req, res) => Todo
+    .findById(req.params.id)
+    .then(todo => {
+        todo.title = req.body.title;
+
+        todo.save().then(todo => res.json(todo));
+    })
+    .catch(() => res.status(500).json({message: 'failure'}))
+);
+
 router.delete('/:id', (req, res) => Todo
     .findById(req.params.id)
     .then(todo => todo

@@ -15,6 +15,10 @@ export default data => {
         errors.email = 'email field is required';
     }
 
+    if (!validator.isLength(data.password, {min: 8, max: 20})) {
+        errors.password = 'password field must be from 8 to 20';
+    }
+
     if (validator.isEmpty(data.password)) {
         errors.password = 'password field is required';
     }
