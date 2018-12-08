@@ -2,27 +2,38 @@ import React, {Component, Fragment} from 'react';
 import Input from "../../components/Input";
 import validator from './validator';
 import Todo from "./Todo";
-import {client} from "../../api";
+import {connect} from "react-redux";
+import {
+    addTodo,
+    changeTodosField,
+    getAddTodoValue,
+    getTodos,
+    getTodosErrors,
+    getTodosList,
+    getTodosLoader
+} from "../../redux/reducers/todos";
+
+const connector = connect(
+    state => ({
+        title: getAddTodoValue(state),
+        isFetching: getTodosLoader(state),
+        todos: getTodosList(state),
+        errors: getTodosErrors(state)
+    }),
+    dispatch => ({
+        getTodos: dispatch(getTodos),
+        addTodo: dispatch(addTodo),
+        changeTodosField: dispatch(changeTodosField),
+    })
+);
 
 class Todos extends Component {
-    state = {
-        title: '',
-        isFetching: true,
-        todos: [],
-        errors: {}
-    };
-
     componentDidMount() {
-        client('todos')
-            .then(todos => this.setState(state => ({...state, todos, isFetching: false})));
-
-        // fetch('/api/todos')
-        //     .then(res => res.json())
-        //     .then(todos => this.setState({todos, isFetching: false}));
+        this.props.getTodos();
     }
 
     render() {
-        const {isFetching, todos, title, errors} = this.state;
+        const {title, isFetching, todos, errors} = this.props;
 
         return (
             <Fragment>
@@ -30,7 +41,7 @@ class Todos extends Component {
                     <Input
                         placeholder="ToDo"
                         value={title}
-                        onChange={this.changeHandler('title')}
+                        onChange={value => this.props.changeTodosField('title', value)}
                         onBlur={this.validator}
                         error={errors.title}
                     />
@@ -41,11 +52,11 @@ class Todos extends Component {
                 {isFetching && <div>Загрузка...</div>}
 
                 {
-                    todos && todos.length ? todos.map(todo =>
+                    todos && todos.length ?
+                        todos.map(todo =>
                             <Todo
                                 key={todo._id}
                                 todo={todo}
-                                removeHandler={this.removeHandler}
                             />
                         )
                         :
@@ -56,43 +67,22 @@ class Todos extends Component {
     }
 
     validator = () => {
-        const {errors} = validator({title: this.state.title});
+        const {errors} = validator({title: this.props.title});
 
-        this.setState(state => ({...state, errors}));
+        return this.props.changeTodosField('errors', errors);
     };
 
-    changeHandler = field => value => this.setState(
-        state => ({
-            ...state,
-            [field]: value
-        }),
-        () => this.validator()
-    );
-
-    removeHandler = id => this.setState(
-        state => ({
-            ...state,
-            todos: state.todos.filter(todo => todo._id !== id)
-        })
-    );
-
-    submitHandler = async e => {
+    submitHandler = e => {
         e.preventDefault();
 
-        const {errors, isValid} = validator({title: this.state.title});
+        const {errors, isValid} = validator({title: this.props.title});
 
         if (!isValid) {
-            return this.setState(state => ({...state, errors}));
+            return this.props.changeTodosField('errors', errors);
         }
 
-        const todo = await client(
-            'todos',
-            'POST',
-            {body: JSON.stringify({title: this.state.title})}
-        );
-
-        this.setState(state => ({...state, todos: [...state.todos, todo], title: ''}));
+        return this.props.addTodo();
     };
 }
 
-export default Todos;
+export default connector(Todos);

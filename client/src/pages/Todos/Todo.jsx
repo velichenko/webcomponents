@@ -1,47 +1,74 @@
 import React, {Component, Fragment} from 'react';
 import Input from "../../components/Input";
-import {client} from "../../api";
+import {connect} from "react-redux";
+import {editTodoField, removeTodo, updateTodo} from "../../redux/reducers/todos";
+import validator from "./validator";
+
+const connector = connect(
+    null,
+    dispatch => ({
+        removeTodo: dispatch(removeTodo),
+        editTodoField: dispatch(editTodoField),
+        updateTodo: dispatch(updateTodo)
+    }),
+    null
+);
 
 class Todo extends Component {
-    state = {
-        isEditing: false
-    };
-
     render() {
-        const {todo} = this.props;
-        const {isEditing} = this.state;
+        const {_id, isEditing, title, errors} = this.props.todo;
         return (
             <div>
                 {
                     isEditing ?
                         <Fragment>
                             <Input
-                                value={todo.title}
+                                value={title}
+                                onChange={value => this.props.editTodoField(_id, 'title', value)}
+                                onBlur={this.validator}
+                                error={errors.title}
                             />
 
-                            <button onClick={() => this.setState(state => ({...state, isEditing: !state.isEditing}))}>
+                            <button onClick={this.saveHandler}>
                                 Сохранить
                             </button>
                         </Fragment>
                         :
                         <Fragment>
-                            {todo.title}
+                            {title}
 
-                            <button onClick={() => this.setState(state => ({...state, isEditing: !state.isEditing}))}>
+                            <button
+                                onClick={() => this.props.editTodoField(_id, 'isEditing', !isEditing)}
+                            >
                                 Изменить
                             </button>
                         </Fragment>
                 }
 
-                <button onClick={this.removeHandler(todo._id)}>Удалить</button>
+                <button onClick={() => this.props.removeTodo(_id)}>Удалить</button>
             </div>
         );
     }
 
-    removeHandler = id => async () => {
-        await client(`todos/${id}`, 'DELETE');
-        this.props.removeHandler(id)
+    validator = () => {
+        const {title, _id} = this.props.todo;
+        const {errors} = validator({title});
+
+        return this.props.editTodoField(_id, 'errors', errors);
     };
+
+    saveHandler = e => {
+        e.preventDefault();
+
+        const {title, _id} = this.props.todo;
+        const {errors, isValid} = validator({title});
+
+        if (!isValid) {
+            return this.props.editTodoField(_id, 'errors', errors);
+        }
+
+        return this.props.updateTodo(_id, title);
+    }
 }
 
-export default Todo;
+export default connector(Todo);
