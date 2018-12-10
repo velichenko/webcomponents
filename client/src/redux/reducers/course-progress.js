@@ -68,7 +68,7 @@ export const addProgressPerDay = (dispatch, getState) => async () => {
                 type: types.SAVE_PROGRESS,
                 payload: {
                     data,
-                    finished: progress.reduce((prev, next) => prev + next.count, 0)
+                    finished: data.reduce((prev, next) => prev + Number(next.count), 0)
                 }
             })
         }

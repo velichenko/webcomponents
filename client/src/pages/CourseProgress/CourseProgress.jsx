@@ -11,9 +11,11 @@ import {
 import Input from "../../components/Input";
 import Loader from "../../components/Loader";
 import LineChart from "../../components/LineChart";
+import {pluralize} from "../../utils/formatter";
 
 const connector = connect(
     state => ({
+        finished: getCourseProgressField('finished')(state),
         count: getCourseProgressField('count')(state),
         date: getCourseProgressField('date')(state),
         isFetching: getCourseProgressLoader(state),
@@ -32,7 +34,8 @@ class CourseProgress extends Component {
     }
 
     render() {
-        const {count, date, isFetching, progress} = this.props;
+        const {count, date, isFetching, progress, finished} = this.props;
+        const word = pluralize(finished, ['курс', 'курса', 'курсов']);
         return (
             <Fragment>
                 <form onSubmit={this.submitHandler}>
@@ -54,6 +57,8 @@ class CourseProgress extends Component {
                 </form>
 
                 {isFetching && <Loader/>}
+
+                <h1>Закончено {finished} {word}</h1>
 
                 <LineChart
                     data={progress}
