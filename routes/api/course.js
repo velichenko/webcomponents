@@ -15,9 +15,18 @@ router.post('/', (req, res) => {
         return res.status(400).json({errors});
     }
 
-    const newDay = new Day({count: req.body.count, date: new Date(req.body.date).getTime()});
+    Day.where({date: req.body.date}).findOne()
+        .then(day => {
+            if (day) {
+                day.count = req.body.count;
 
-    newDay.save().then(day => res.json(day));
+                return day.save().then(day => res.json(day))
+            }
+
+            const newDay = new Day({count: req.body.count, date: req.body.date});
+
+            return newDay.save().then(day => res.json(day));
+        });
 });
 
 module.exports = router;

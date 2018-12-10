@@ -1,6 +1,5 @@
 import * as types from '../actions/course-progress';
 import {client} from "../../api";
-import {formattedDate} from "../../utils/date";
 
 const initialState = {
     count: 0,
@@ -41,7 +40,7 @@ export const courseProgressRequest = dispatch => async () => {
             type: types.SAVE_PROGRESS,
             payload: {
                 isFetching: false,
-                data: data.map(({count, date}) => ({count, date: formattedDate(date)})),
+                data: data.map(({count, date}) => ({count, date})),
                 finished: data.reduce((prev, next) => prev + next.count, 0)
             }
         })
@@ -56,8 +55,25 @@ export const addProgressPerDay = (dispatch, getState) => async () => {
     try {
         const {data: progress, count, date, finished} = getState().progress;
         const day = await client('course', 'POST', {body: JSON.stringify({count, date})});
+        const exist = progress.find(day => day.date === date);
 
-        dispatch({
+        if (exist) {
+            const data = progress.map(item => {
+                if (item.date === date) return {...item, count};
+
+                return item
+            });
+
+            return dispatch({
+                type: types.SAVE_PROGRESS,
+                payload: {
+                    data,
+                    finished: progress.reduce((prev, next) => prev + next.count, 0)
+                }
+            })
+        }
+
+        return dispatch({
             type: types.SAVE_PROGRESS,
             payload: {
                 data: [...progress, {count: day.count, date: day.date}],
