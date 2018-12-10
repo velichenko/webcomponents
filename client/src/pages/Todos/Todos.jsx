@@ -12,6 +12,7 @@ import {
     getTodosList,
     getTodosLoader
 } from "../../redux/reducers/todos";
+import Loader from "../../components/Loader";
 
 const connector = connect(
     state => ({
@@ -49,7 +50,7 @@ class Todos extends Component {
                     <button>Добавить</button>
                 </form>
 
-                {isFetching && <div>Загрузка...</div>}
+                {isFetching && <Loader/>}
 
                 {
                     todos && todos.length ?

@@ -3,6 +3,7 @@ import {Link, Route} from 'react-router-dom';
 import Main from '../pages/Main';
 import Registration from "../pages/Registration/Registration";
 import Todos from '../pages/Todos/Todos';
+import CourseProgress from "../pages/CourseProgress/CourseProgress";
 import LeaveRequest from '../pages/LeaveRequest';
 
 const App = () => (
@@ -14,6 +15,8 @@ const App = () => (
         <Route path="/registration" exact component={Registration}/>
 
         <Route path="/todos" exact component={Todos}/>
+
+        <Route path="/course" exact component={CourseProgress}/>
 
         <Route path="/leave-request" exact component={LeaveRequest}/>
     </Fragment>

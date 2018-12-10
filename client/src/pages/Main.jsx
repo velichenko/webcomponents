@@ -13,6 +13,8 @@ const Main = () => (
 
         <Link to="/todos" style={styles.link}>Todos</Link>
 
+        <Link to="/course" style={styles.link}>Course Progress</Link>
+
         <Link to="/leave-request" style={styles.link}>LeaveRequest</Link>
     </Fragment>
 );
